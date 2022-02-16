@@ -23,38 +23,44 @@ package xyz.morningstar.lucifer.bukkit.rest.routing;
 import org.glassfish.grizzly.http.server.HttpHandler;
 import org.glassfish.grizzly.http.server.Request;
 import org.glassfish.grizzly.http.server.Response;
+import xyz.morningstar.lucifer.bukkit.rest.struct.RequestData;
+import xyz.morningstar.lucifer.bukkit.rest.struct.payload.DataPayload;
+import xyz.morningstar.lucifer.bukkit.rest.struct.payload.Payload;
 
 /**
- * BukkitREST; xyz.morningstar.lucifer.bukkit.rest.routing:Route
+ * BukkitREST; xyz.morningstar.lucifer.bukkit.rest.routing:RouteExecutor
  *
  * @license MIT <https://opensource.org/licenses/MIT>
  *
  * @author LuciferMorningstarDev - https://github.com/LuciferMorningstarDev
  * @since 15.02.2022
  */
-public abstract class Route extends HttpHandler {
+public abstract class RouteExecutor extends HttpHandler {
 
     private String path;
-    private boolean async;
 
-    public Route(String path, boolean async) {
+    public RouteExecutor(String path) {
         this.path = path;
-        this.async = async;
     }
 
-    abstract void run(Request request, Response response);
+    protected abstract Payload execute(RequestData requestData);
 
     @Override
-    public void service(Request request, Response response) throws Exception {
-        if(this.async()) new Thread(() -> run(request, response), "RouteExecutor-" + this.path()).start();
-        else run(request, response);
+    public void service(Request request, Response response) {
+        try {
+            Payload payload = execute(RequestData.from(request));
+            payload.write(response);
+        } catch (Exception exception) {
+            try {
+                DataPayload.internalServerError(exception).write(response);
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public String path() {
         return path;
     }
 
-    public boolean async() {
-        return async;
-    }
 }

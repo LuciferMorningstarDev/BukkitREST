@@ -20,6 +20,10 @@
  */
 package xyz.morningstar.lucifer.bukkit.rest;
 
+import org.glassfish.grizzly.http.server.HttpServer;
+import org.glassfish.grizzly.http.server.ServerConfiguration;
+import xyz.morningstar.lucifer.bukkit.rest.routing.RouteExecutor;
+
 /**
  * BukkitREST; xyz.morningstar.lucifer.bukkit.rest:ApiWebServer
  *
@@ -36,5 +40,10 @@ public interface ApiWebServer {
         stop();
         start();
     }
+
+    HttpServer getHttpServer();
+    ServerConfiguration getConfig();
+
+    boolean addRouteExecutor(RouteExecutor executor);
 
 }

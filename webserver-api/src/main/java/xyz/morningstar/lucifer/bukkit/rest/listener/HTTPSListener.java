@@ -20,21 +20,31 @@
  */
 package xyz.morningstar.lucifer.bukkit.rest.listener;
 
+import org.glassfish.grizzly.http.server.NetworkListener;
 import org.glassfish.grizzly.ssl.SSLContextConfigurator;
+import org.glassfish.grizzly.ssl.SSLEngineConfigurator;
+import xyz.morningstar.lucifer.bukkit.rest.configuration.ServerConfiguration;
 
 /**
- * BukkitREST; xyz.morningstar.lucifer.bukkit.rest.listener:HTTPSApiListener
+ * BukkitREST; xyz.morningstar.lucifer.bukkit.rest.listener:HTTPSListener
  *
  * @license MIT <https://opensource.org/licenses/MIT>
  *
  * @author LuciferMorningstarDev - https://github.com/LuciferMorningstarDev
  * @since 15.02.2022
  */
-public class HTTPSApiListener {
+public class HTTPSListener extends NetworkListener {
 
     private SSLContextConfigurator sslContextConfigurator;
 
-    public HTTPSApiListener() {
+    public HTTPSListener(ServerConfiguration config) {
+        super("HTTPS-NetworkListener", config.getHttpsBind().host(), config.getHttpsBind().port());
+        SSLContextConfigurator sslContextConfigurator = new SSLContextConfigurator();
+        sslContextConfigurator.setKeyStoreFile(config.getCertificatePemPath());
+        sslContextConfigurator.setKeyStorePass(config.getPrivateKeyPemPath());
+        this.setSSLEngineConfig(new SSLEngineConfigurator(sslContextConfigurator));
+        this.setSecure(true);
+        this.setTraceEnabled(false);
     }
 
 }

@@ -1,0 +1,14 @@
+name: BukkitREST
+version: ${project.version}
+main: xyz.morningstar.lucifer.bukkit.rest.BukkitRestApiPlugin
+
+api-version: 1.18
+
+description: This plugin adds a RESTful JSON API to your minecraft server to manage whitelist / bans or gather information about worlds / server / players / other data
+
+authors:
+  - LuciferMorningstarDev
+
+website: https://github.com/LuciferMorningstarDev/BukkitREST
+
+load: POSTWORLD

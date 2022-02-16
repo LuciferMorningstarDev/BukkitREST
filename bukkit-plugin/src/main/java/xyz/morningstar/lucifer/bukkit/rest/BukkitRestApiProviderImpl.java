@@ -20,6 +20,14 @@
  */
 package xyz.morningstar.lucifer.bukkit.rest;
 
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
+import xyz.morningstar.lucifer.bukkit.rest.configuration.DatabaseConfiguration;
+import xyz.morningstar.lucifer.bukkit.rest.configuration.ServerConfiguration;
+import xyz.morningstar.lucifer.bukkit.rest.struct.HostAndPort;
+
+import java.util.ArrayList;
+
 /**
  * BukkitREST; xyz.morningstar.lucifer.bukkit.rest:BukkitRestApiProviderImpl
  *
@@ -30,12 +38,60 @@ package xyz.morningstar.lucifer.bukkit.rest;
  */
 public class BukkitRestApiProviderImpl implements BukkitRestApiProvider {
 
+    private final ApiWebServerImpl apiWebServer;
+    private final ServerConfiguration serverConfiguration;
+
     public BukkitRestApiProviderImpl(BukkitRestApiPlugin plugin) {
+        FileConfiguration config = plugin.getConfig();
+        ArrayList<String> enabledRoutes = new ArrayList<>();
+        ConfigurationSection routesSection = config.getConfigurationSection("enabledRoutes");
+        routesSection.getKeys(false).forEach(routeString -> {
+            if(routesSection.getBoolean(routeString, false)) enabledRoutes.add(routeString);
+        });
+        if(config.getBoolean("SSL.enabled", false)) {
+            this.serverConfiguration = new ServerConfiguration(
+                    config.getBoolean("debug", false),
+                    config.getString("hostname", "127.0.0.1"),
+                    config.getBoolean("hostCheck", false),
+                    config.getString("storage", "YAML"),
+                    new DatabaseConfiguration(new HostAndPort(config.getString("database.host", "127.0.0.1"),
+                            config.getInt("database.port", 27017)),
+                            config.getString("database.name"), config.getString("database.user"),
+                            config.getString("database.password"), config.getString("database.authenticationDatabase")),
+                    new HostAndPort(config.getString("bind", "127.0.0.1"), config.getInt("port", 80)),
+                    new HostAndPort(config.getString("bind", "127.0.0.1"), config.getInt("port", 443)),
+                    config.getString("", null),
+                    config.getString("", null),
+                    enabledRoutes
+            );
+        } else {
+            this.serverConfiguration = new ServerConfiguration(
+                    config.getBoolean("debug", false),
+                    config.getString("hostname", "127.0.0.1"),
+                    config.getBoolean("hostCheck", false),
+                    config.getString("storage"),
+                    new DatabaseConfiguration(new HostAndPort(config.getString("database.host", "127.0.0.1"),
+                            config.getInt("database.port", 27017)),
+                            config.getString("database.name"), config.getString("database.user"),
+                            config.getString("database.password"), config.getString("database.authenticationDatabase")),
+                    new HostAndPort(config.getString("bind", "127.0.0.1"), config.getInt("port", 80)),
+                    enabledRoutes
+            );
+        }
+        this.apiWebServer = new ApiWebServerImpl(this.serverConfiguration);
+    }
+
+    public ServerConfiguration getServerConfiguration() {
+        return serverConfiguration;
+    }
+
+    public ApiWebServerImpl getApiWebServer() {
+        return apiWebServer;
     }
 
     @Override
     public ApiWebServer getServer() {
-        return null;
+        return apiWebServer;
     }
 
 }

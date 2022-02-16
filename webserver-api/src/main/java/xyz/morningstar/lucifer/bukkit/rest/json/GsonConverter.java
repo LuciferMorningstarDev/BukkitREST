@@ -35,19 +35,35 @@ public class GsonConverter {
     private static Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     public static String toJsonString(Object someInstanceOfStaff) {
-        return gson.toJson(someInstanceOfStaff);
+        try {
+            return gson.toJson(someInstanceOfStaff);
+        } catch(Exception e) {
+            return null;
+        }
     }
 
     public static <T> T toType(String someJsonStuff, Class type) {
-        return (T) gson.fromJson(someJsonStuff,type);
+        try {
+            return (T) gson.fromJson(someJsonStuff,type);
+        } catch(Exception e) {
+            return null;
+        }
     }
 
     public static JsonObject toJson(String someJsonStuff) {
-        return JsonParser.parseString(someJsonStuff).getAsJsonObject();
+        try {
+            return JsonParser.parseString(someJsonStuff).getAsJsonObject();
+        } catch(Exception e) {
+            return null;
+        }
     }
 
     public static String toJsonString(JsonElement jsonElement) {
-        return gson.toJson(jsonElement);
+        try {
+            return gson.toJson(jsonElement);
+        } catch(Exception e) {
+            return null;
+        }
     }
 
 }

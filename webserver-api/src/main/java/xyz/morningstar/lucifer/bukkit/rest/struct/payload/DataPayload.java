@@ -25,6 +25,11 @@ import org.glassfish.grizzly.http.util.HttpStatus;
 import xyz.morningstar.lucifer.bukkit.rest.json.GsonConverter;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * BukkitREST; xyz.morningstar.lucifer.bukkit.rest.struct.payload:DataPayload
@@ -36,80 +41,28 @@ import java.io.IOException;
  */
 public interface DataPayload extends Payload {
 
-    Payload payload();
+    Payload parent();
 
     Object data();
 
-    class DefaultImpl implements DataPayload {
-
-        private final Payload payload;
-        private final Object data;
-
-        public DefaultImpl() {
-            this.payload = Payload.ok();
-            this.data = null;
-        }
-
-        public DefaultImpl(Object data) {
-            this.payload = Payload.ok();
-            this.data = data;
-        }
-
-        public DefaultImpl(Payload payload, Object data) {
-            this.payload = payload;
-            this.data = data;
-        }
-
-        @Override
-        public Object data() {
-            return data;
-        }
-
-        @Override
-        public Payload payload() {
-            return payload;
-        }
-
-        @Override
-        public boolean error() {
-            return payload().error();
-        }
-
-        @Override
-        public String message() {
-            return payload().message();
-        }
-
-        @Override
-        public HttpStatus status() {
-            return payload().status();
-        }
-
-        @Override
-        public boolean write(Response response) throws IOException {
-            response.setStatus(status());
-            response.setContentType("application/json");
-            String json = GsonConverter.toJsonString(this);
-            response.setContentLength(json.length());
-            response.getWriter().write(json);
-            return true;
-        }
-    }
-
     static DataPayload create(Object data) {
-        return new DefaultImpl(data);
+        return new DataPayloadImpl(data);
     }
 
     static DataPayload create(Payload payload, Object data) {
-        return new DefaultImpl(payload, data);
+        return new DataPayloadImpl(payload, data);
     }
 
     static DataPayload internalServerError(Exception exception) {
-        return new DefaultImpl(internalServerError(exception.getMessage()), exception.getStackTrace());
-    }
-
-    static Payload internalServerError(String message) {
-        return Payload.internalServerError(message);
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        exception.printStackTrace(pw);
+        String sStackTrace = sw.toString();
+        try {
+            sw.close();
+            pw.close();
+        } catch(Exception e) {}
+        return new DataPayloadImpl(Payload.internalServerError(exception.getMessage()), sStackTrace);
     }
 
 }

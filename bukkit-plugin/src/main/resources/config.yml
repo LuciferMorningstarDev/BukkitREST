@@ -1,0 +1,68 @@
+config-version: 1 # -> DO NOT CHANGE
+
+# Print debug messages to the console?
+debug: true
+
+# The Authentication String for internal API requests ( "Authorization": "internalAuth" )
+internalAuth: 'internal_authentication_password_min_64_characters_required_in_here_or_the_server_does_not_start'
+
+# the hostname of your webserver ( Fill in if you want to enable hostCheck )
+hostname: example.com
+# should the server check for a specific hostname
+# if enabled only request to the given hostname are valid
+hostCheck: false
+# the default port in which the server should run
+port: 80
+# the bound address for the server ( 127.0.0.1 - local / 0.0.0.0 - public )
+bind: 0.0.0.0
+
+# Server security
+SSL:
+  # if set to false ssl is disabled
+  enabled: false
+  # only matters if enabled
+  port: 443
+  # the bound address for the server ( 127.0.0.1 - local / 0.0.0.0 - public )
+  bind: 0.0.0.0
+
+  # SSL certificate paths ( private key and certificate )
+  privateKeyPem: /path/to/privateKey.pem
+  certPem: /path/to/cert.pem
+
+# enable/disable some implemented routes
+enabledRoutes:
+  # <api_base_url>/ping        - ( only a public route to check if the API is available )
+  ping: true
+  # <api_base_url>/bans        - ( list / add / remove banned players )
+  bans: true
+  # <api_base_url>/worlds      - ( list / get information about a world/s )
+  worlds: true
+  # <api_base_url>/players     - ( get information about a player )
+  players: true
+  # <api_base_url>/apiusers    - ( create and delete API users )
+  apiusers: true
+  # <api_base_url>/whitelist   - ( list / add / remove whitelist players )
+  whitelist: true
+  # <api_base_url>/serverinfo  - ( Get information about the current server )
+  serverinfo: true
+  # If you want to register custom routes set this to true
+  customRoutes: false
+
+# if you enable users route where should the data for the users been stored
+# available storage methods ( YAML / MONGODB )
+storage: YAML
+
+# Database configuration
+# If storage method uses a database insert information
+database:
+  host: 127.0.0.1
+  port: 27017
+  # The database name for the storage
+  name: BukkitREST
+  # The database user ( Needs READ and WRITE access in the database
+  user: BukkitREST
+  # The authentication password for the database
+  password: 'databaseAuthenticationPassword'
+  # The authentication database where the user is stored
+  authenticationDatabase: BukkitREST
+

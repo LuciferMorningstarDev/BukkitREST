@@ -20,6 +20,14 @@
  */
 package xyz.morningstar.lucifer.bukkit.rest;
 
+import org.glassfish.grizzly.http.server.HttpServer;
+import xyz.morningstar.lucifer.bukkit.rest.configuration.ServerConfiguration;
+import xyz.morningstar.lucifer.bukkit.rest.listener.HTTPListener;
+import xyz.morningstar.lucifer.bukkit.rest.listener.HTTPSListener;
+import xyz.morningstar.lucifer.bukkit.rest.routing.RouteExecutor;
+
+import java.io.IOException;
+
 /**
  * BukkitREST; xyz.morningstar.lucifer.bukkit.rest:ApiWebServerImpl
  *
@@ -30,21 +38,65 @@ package xyz.morningstar.lucifer.bukkit.rest;
  */
 public class ApiWebServerImpl implements ApiWebServer {
 
-    public ApiWebServerImpl() {
+    private final ServerConfiguration serverConfiguration;
+
+    private final HttpServer httpServer;
+
+    private org.glassfish.grizzly.http.server.ServerConfiguration sConf;
+
+    public ApiWebServerImpl(ServerConfiguration serverConfiguration) {
+        this.serverConfiguration = serverConfiguration;
+        this.httpServer = new HttpServer();
+        this.httpServer.removeListener("grizzly"); // remove default grizzly listeners
+        this.httpServer.addListener(new HTTPListener(serverConfiguration));
+        if(serverConfiguration.isSecure()) {
+            this.httpServer.addListener(new HTTPSListener(serverConfiguration));
+        }
+        this.sConf = this.httpServer.getServerConfiguration();
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> httpServer.shutdownNow()));
     }
 
     @Override
     public void start() {
-
+        try {
+            this.httpServer.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void stop() {
-
+        try {
+            this.httpServer.shutdownNow();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public void restart() {
-
+    public HttpServer getHttpServer() {
+        return httpServer;
     }
+
+    @Override
+    public org.glassfish.grizzly.http.server.ServerConfiguration getConfig() {
+        return this.sConf;
+    }
+
+    @Override
+    public boolean addRouteExecutor(RouteExecutor executor) {
+        try {
+            getConfig().addHttpHandler(executor, executor.getName());
+            return true;
+        } catch(Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
+    public ServerConfiguration getServerConfiguration() {
+        return serverConfiguration;
+    }
+
 }

@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        <title>BukkitREST | RESTful API for Bukkit servers</title>
+
+        <link href="http://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,500italic,700,700italic,900italic,900" rel="stylesheet" type="text/css" />
+
+        <!-- Meta -->
+        <meta property="og:site_name" content="BukkitREST" />
+        <meta property="og:locale" content="en" />
+        <meta property="og:image" content="logo.png" />
+        <meta property="og:url" content="https://github.com/LuciferMorningstarDev/BukkitREST" />
+        <meta property="og:title" content="BukkitREST | RESTful API" />
+        <meta
+            property="og:description"
+            content="BukkitREST a RESTful API for your Bukkit Server
+ ____        _    _    _ _   ____  _____ ____ _____ 
+| __ ) _   _| | _| | _(_) |_|  _ \| ____/ ___|_   _|
+|  _ \| | | | |/ / |/ / | __| |_) |  _| \___ \ | |  
+| |_) | |_| |   <|   <| | |_|  _ <| |___ ___) || |  
+|____/ \__,_|_|\_\_|\_\_|\__|_| \_\_____|____/ |_|  
+
+
+        "
+        />
+        <meta
+            name="description"
+            content="BukkitREST a RESTful API for your Bukkit Server
+ ____        _    _    _ _   ____  _____ ____ _____ 
+| __ ) _   _| | _| | _(_) |_|  _ \| ____/ ___|_   _|
+|  _ \| | | | |/ / |/ / | __| |_) |  _| \___ \ | |  
+| |_) | |_| |   <|   <| | |_|  _ <| |___ ___) || |  
+|____/ \__,_|_|\_\_|\_\_|\__|_| \_\_____|____/ |_|  
+
+
+        "
+        />
+        <link rel="canonical" href="https://github.com/LuciferMorningstarDev/BukkitREST" />
+
+        <!-- JQUERY -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+        <style>
+            *,
+            *:before,
+            *:after {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                color: silver;
+                font-family: -apple-system, BlinkMacSystemFont, 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            }
+            html,
+            body {
+                background: #111;
+
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+
+                min-height: 120vh;
+                min-width: 100vw;
+                overflow-x: hidden;
+            }
+
+            *::-webkit-scrollbar {
+                width: 10px;
+            }
+            *::-webkit-scrollbar-track {
+                background-color: transparent;
+                background-color: black;
+            }
+            *::-webkit-scrollbar-thumb {
+                background-color: #283ee470;
+                border-radius: 20px;
+                border: 3px solid transparent;
+                background-clip: content-box;
+            }
+            *::-webkit-scrollbar-thumb:hover {
+                background-color: #283ee4;
+            }
+
+            *::-moz-selection {
+                background: #5754ffab;
+            }
+
+            *::selection {
+                background: #5754ffab;
+            }
+
+            .noselect {
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+            }
+
+            .textselect {
+                -webkit-user-select: text;
+                -moz-user-select: text;
+                -ms-user-select: text;
+                user-select: text;
+            }
+
+            .select {
+                -webkit-user-select: auto;
+                -moz-user-select: auto;
+                -ms-user-select: auto;
+                user-select: auto;
+            }
+
+            .divider {
+                width: 100%;
+                margin-top: 5px;
+                margin-bottom: 5px;
+            }
+
+            .has-top-divider {
+                border-top: 1px solid #5754ffab;
+            }
+
+            .has-right-divider {
+                border-right: 1px solid #5754ffab;
+            }
+
+            .has-bottom-divider {
+                border-bottom: 1px solid #5754ffab;
+            }
+
+            .has-left-divider {
+                border-left: 1px solid #5754ffab;
+            }
+
+            .has-top-divider-2 {
+                border-top: 2px solid #5754ffab;
+            }
+
+            .has-right-divider-2 {
+                border-right: 2px solid #5754ffab;
+            }
+
+            .has-bottom-divider-2 {
+                border-bottom: 2px solid #5754ffab;
+            }
+
+            .has-left-divider-2 {
+                border-left: 2px solid #5754ffab;
+            }
+
+            .flashbutton-red {
+                position: relative;
+                display: inline-block;
+                padding: 1em 1em;
+                margin: 5px;
+                color: #ee0000;
+                background: #272727;
+                -webkit-box-shadow: 0 0 2px #ee0000;
+                box-shadow: 0 0 2px #ee0000;
+                border-radius: 2px;
+                text-transform: uppercase;
+                letter-spacing: 2px;
+                text-decoration: none;
+                font-size: 14px;
+                overflow: hidden;
+                -webkit-transition: 0.2s;
+                transition: 0.2s;
+            }
+
+            .flashbutton-red:hover {
+                color: #960000;
+                background: #ee0000;
+                text-decoration: none;
+                -webkit-box-shadow: 0 0 10px #ee0000, 0 0 40px #ee0000, 0 0 800px #ee0000;
+                box-shadow: 0 0 10px #ee0000, 0 0 40px #ee0000, 0 0 800px #ee0000;
+                -webkit-transition-delay: 1s;
+                transition-delay: 1s;
+            }
+
+            .flashbutton-red:hover span:nth-child(1) {
+                left: 100%;
+                -webkit-transition: 1s;
+                transition: 1s;
+            }
+
+            .flashbutton-red:hover span:nth-child(3) {
+                right: 100%;
+                -webkit-transition: 1s;
+                transition: 1s;
+                -webkit-transition-delay: 0.5s;
+                transition-delay: 0.5s;
+            }
+
+            .flashbutton-red:hover span:nth-child(2) {
+                top: 100%;
+                -webkit-transition: 1s;
+                transition: 1s;
+                -webkit-transition-delay: 0.25s;
+                transition-delay: 0.25s;
+            }
+
+            .flashbutton-red:hover span:nth-child(4) {
+                bottom: 100%;
+                -webkit-transition: 1s;
+                transition: 1s;
+                -webkit-transition-delay: 0.75s;
+                transition-delay: 0.75s;
+            }
+
+            .flashbutton-red span {
+                position: absolute;
+                display: block;
+            }
+
+            .flashbutton-red span:nth-child(1) {
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 2px;
+                background: -webkit-gradient(linear, left top, right top, from(transparent), to(#ee0000));
+                background: linear-gradient(90deg, transparent, #ee0000);
+            }
+
+            .flashbutton-red span:nth-child(3) {
+                bottom: 0;
+                right: -100%;
+                width: 100%;
+                height: 2px;
+                background: -webkit-gradient(linear, right top, left top, from(transparent), to(#ee0000));
+                background: linear-gradient(270deg, transparent, #ee0000);
+            }
+
+            .flashbutton-red span:nth-child(2) {
+                top: -100%;
+                right: 0%;
+                width: 2px;
+                height: 100%;
+                background: -webkit-gradient(linear, left top, left bottom, from(transparent), to(#ee0000));
+                background: linear-gradient(180deg, transparent, #ee0000);
+            }
+
+            .flashbutton-red span:nth-child(4) {
+                bottom: -100%;
+                left: 0%;
+                width: 2px;
+                height: 100%;
+                background: -webkit-gradient(linear, left bottom, left top, from(transparent), to(#ee0000));
+                background: linear-gradient(360deg, transparent, #ee0000);
+            }
+
+            .flashbutton-orange {
+                position: relative;
+                display: inline-block;
+                padding: 1em 1em;
+                margin: 5px;
+                color: #ffa500;
+                background: #272727;
+                -webkit-box-shadow: 0 0 2px #ffa500;
+                box-shadow: 0 0 2px #ffa500;
+                border-radius: 2px;
+                text-transform: uppercase;
+                letter-spacing: 2px;
+                text-decoration: none;
+                font-size: 14px;
+                overflow: hidden;
+                -webkit-transition: 0.2s;
+                transition: 0.2s;
+            }
+
+            .flashbutton-orange:hover {
+                color: #960000;
+                background: #ffa500;
+                text-decoration: none;
+                -webkit-box-shadow: 0 0 10px #ffa500, 0 0 40px #ffa500, 0 0 800px #ffa500;
+                box-shadow: 0 0 10px #ffa500, 0 0 40px #ffa500, 0 0 800px #ffa500;
+                -webkit-transition-delay: 1s;
+                transition-delay: 1s;
+            }
+
+            .flashbutton-orange:hover span:nth-child(1) {
+                left: 100%;
+                -webkit-transition: 1s;
+                transition: 1s;
+            }
+
+            .flashbutton-orange:hover span:nth-child(3) {
+                right: 100%;
+                -webkit-transition: 1s;
+                transition: 1s;
+                -webkit-transition-delay: 0.5s;
+                transition-delay: 0.5s;
+            }
+
+            .flashbutton-orange:hover span:nth-child(2) {
+                top: 100%;
+                -webkit-transition: 1s;
+                transition: 1s;
+                -webkit-transition-delay: 0.25s;
+                transition-delay: 0.25s;
+            }
+
+            .flashbutton-orange:hover span:nth-child(4) {
+                bottom: 100%;
+                -webkit-transition: 1s;
+                transition: 1s;
+                -webkit-transition-delay: 0.75s;
+                transition-delay: 0.75s;
+            }
+
+            .flashbutton-orange span {
+                position: absolute;
+                display: block;
+            }
+
+            .flashbutton-orange span:nth-child(1) {
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 2px;
+                background: -webkit-gradient(linear, left top, right top, from(transparent), to(#ffa500));
+                background: linear-gradient(90deg, transparent, #ffa500);
+            }
+
+            .flashbutton-orange span:nth-child(3) {
+                bottom: 0;
+                right: -100%;
+                width: 100%;
+                height: 2px;
+                background: -webkit-gradient(linear, right top, left top, from(transparent), to(#ffa500));
+                background: linear-gradient(270deg, transparent, #ffa500);
+            }
+
+            .flashbutton-orange span:nth-child(2) {
+                top: -100%;
+                right: 0%;
+                width: 2px;
+                height: 100%;
+                background: -webkit-gradient(linear, left top, left bottom, from(transparent), to(#ffa500));
+                background: linear-gradient(180deg, transparent, #ffa500);
+            }
+
+            .flashbutton-orange span:nth-child(4) {
+                bottom: -100%;
+                left: 0%;
+                width: 2px;
+                height: 100%;
+                background: -webkit-gradient(linear, left bottom, left top, from(transparent), to(#ffa500));
+                background: linear-gradient(360deg, transparent, #ffa500);
+            }
+
+            .flashbutton-blue {
+                position: relative;
+                display: inline-block;
+                padding: 1em 1em;
+                margin: 5px;
+                color: #00ffff;
+                background: #272727;
+                -webkit-box-shadow: 0 0 2px #00ffff;
+                box-shadow: 0 0 2px #00ffff;
+                border-radius: 2px;
+                text-transform: uppercase;
+                letter-spacing: 2px;
+                text-decoration: none;
+                font-size: 14px;
+                overflow: hidden;
+                -webkit-transition: 0.2s;
+                transition: 0.2s;
+            }
+
+            .flashbutton-blue:hover {
+                color: #1c0069;
+                background: #00a4af;
+                text-decoration: none;
+                -webkit-box-shadow: 0 0 10px #00a4af, 0 0 40px #00a4af, 0 0 800px #00a4af;
+                box-shadow: 0 0 10px #00a4af, 0 0 40px #00a4af, 0 0 800px #00a4af;
+                -webkit-transition-delay: 1s;
+                transition-delay: 1s;
+            }
+
+            .flashbutton-blue:hover span:nth-child(1) {
+                left: 100%;
+                -webkit-transition: 1s;
+                transition: 1s;
+            }
+
+            .flashbutton-blue:hover span:nth-child(3) {
+                right: 100%;
+                -webkit-transition: 1s;
+                transition: 1s;
+                -webkit-transition-delay: 0.5s;
+                transition-delay: 0.5s;
+            }
+
+            .flashbutton-blue:hover span:nth-child(2) {
+                top: 100%;
+                -webkit-transition: 1s;
+                transition: 1s;
+                -webkit-transition-delay: 0.25s;
+                transition-delay: 0.25s;
+            }
+
+            .flashbutton-blue:hover span:nth-child(4) {
+                bottom: 100%;
+                -webkit-transition: 1s;
+                transition: 1s;
+                -webkit-transition-delay: 0.75s;
+                transition-delay: 0.75s;
+            }
+
+            .flashbutton-blue span {
+                position: absolute;
+                display: block;
+            }
+
+            .flashbutton-blue span:nth-child(1) {
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 2px;
+                background: -webkit-gradient(linear, left top, right top, from(transparent), to(#00a4af));
+                background: linear-gradient(90deg, transparent, #00a4af);
+            }
+
+            .flashbutton-blue span:nth-child(3) {
+                bottom: 0;
+                right: -100%;
+                width: 100%;
+                height: 2px;
+                background: -webkit-gradient(linear, right top, left top, from(transparent), to(#00a4af));
+                background: linear-gradient(270deg, transparent, #00a4af);
+            }
+
+            .flashbutton-blue span:nth-child(2) {
+                top: -100%;
+                right: 0%;
+                width: 2px;
+                height: 100%;
+                background: -webkit-gradient(linear, left top, left bottom, from(transparent), to(#00a4af));
+                background: linear-gradient(180deg, transparent, #00a4af);
+            }
+
+            .flashbutton-blue span:nth-child(4) {
+                bottom: -100%;
+                left: 0%;
+                width: 2px;
+                height: 100%;
+                background: -webkit-gradient(linear, left bottom, left top, from(transparent), to(#00a4af));
+                background: linear-gradient(360deg, transparent, #00a4af);
+            }
+
+            .flashbutton-green {
+                position: relative;
+                display: inline-block;
+                padding: 1em 1em;
+                margin: 5px;
+                color: #00ee00;
+                background: #272727;
+                -webkit-box-shadow: 0 0 2px #00ee00;
+                box-shadow: 0 0 2px #00ee00;
+                border-radius: 2px;
+                text-transform: uppercase;
+                letter-spacing: 2px;
+                text-decoration: none;
+                font-size: 14px;
+                overflow: hidden;
+                -webkit-transition: 0.2s;
+                transition: 0.2s;
+            }
+
+            .flashbutton-green:hover {
+                color: #003617;
+                background: #00ee00;
+                text-decoration: none;
+                -webkit-box-shadow: 0 0 10px #00ee00, 0 0 40px #00ee00, 0 0 800px #00ee00;
+                box-shadow: 0 0 10px #00ee00, 0 0 40px #00ee00, 0 0 800px #00ee00;
+                -webkit-transition-delay: 1s;
+                transition-delay: 1s;
+            }
+
+            .flashbutton-green:hover span:nth-child(1) {
+                left: 100%;
+                -webkit-transition: 1s;
+                transition: 1s;
+            }
+
+            .flashbutton-green:hover span:nth-child(3) {
+                right: 100%;
+                -webkit-transition: 1s;
+                transition: 1s;
+                -webkit-transition-delay: 0.5s;
+                transition-delay: 0.5s;
+            }
+
+            .flashbutton-green:hover span:nth-child(2) {
+                top: 100%;
+                -webkit-transition: 1s;
+                transition: 1s;
+                -webkit-transition-delay: 0.25s;
+                transition-delay: 0.25s;
+            }
+
+            .flashbutton-green:hover span:nth-child(4) {
+                bottom: 100%;
+                -webkit-transition: 1s;
+                transition: 1s;
+                -webkit-transition-delay: 0.75s;
+                transition-delay: 0.75s;
+            }
+
+            .flashbutton-green span {
+                position: absolute;
+                display: block;
+            }
+
+            .flashbutton-green span:nth-child(1) {
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 2px;
+                background: -webkit-gradient(linear, left top, right top, from(transparent), to(#00ee00));
+                background: linear-gradient(90deg, transparent, #00ee00);
+            }
+
+            .flashbutton-green span:nth-child(3) {
+                bottom: 0;
+                right: -100%;
+                width: 100%;
+                height: 2px;
+                background: -webkit-gradient(linear, right top, left top, from(transparent), to(#00ee00));
+                background: linear-gradient(270deg, transparent, #00ee00);
+            }
+
+            .flashbutton-green span:nth-child(2) {
+                top: -100%;
+                right: 0%;
+                width: 2px;
+                height: 100%;
+                background: -webkit-gradient(linear, left top, left bottom, from(transparent), to(#00ee00));
+                background: linear-gradient(180deg, transparent, #00ee00);
+            }
+
+            .flashbutton-green span:nth-child(4) {
+                bottom: -100%;
+                left: 0%;
+                width: 2px;
+                height: 100%;
+                background: -webkit-gradient(linear, left bottom, left top, from(transparent), to(#00ee00));
+                background: linear-gradient(360deg, transparent, #00ee00);
+            }
+
+            header {
+                position: fixed;
+                top: 0;
+                left: 0;
+                z-index: 99;
+                background: #0e0e0e;
+                height: 80px;
+                width: 100vw;
+                display: -webkit-box;
+                display: -ms-flexbox;
+                display: flex;
+                -ms-flex-pack: distribute;
+                justify-content: space-around;
+                -webkit-box-align: center;
+                -ms-flex-align: center;
+                align-items: center;
+            }
+
+            header nav {
+                height: 60px;
+                width: 100vw;
+                display: -webkit-box;
+                display: -ms-flexbox;
+                display: flex;
+                -ms-flex-pack: distribute;
+                justify-content: space-around;
+                -webkit-box-align: center;
+                -ms-flex-align: center;
+                align-items: center;
+            }
+
+            header nav ul {
+                width: 60vw;
+                display: -webkit-box;
+                display: -ms-flexbox;
+                display: flex;
+                -ms-flex-pack: distribute;
+                justify-content: space-around;
+                -webkit-box-align: center;
+                -ms-flex-align: center;
+                align-items: center;
+            }
+
+            header nav .nav-link {
+                color: white;
+            }
+
+            header nav .nav-link:hover {
+                color: silver;
+            }
+
+            main {
+                display: -webkit-box;
+                display: -ms-flexbox;
+                display: flex;
+                -webkit-box-pack: center;
+                -ms-flex-pack: center;
+                justify-content: center;
+                -webkit-box-align: center;
+                -ms-flex-align: center;
+                align-items: center;
+                -webkit-box-orient: horizontal;
+                -webkit-box-direction: normal;
+                -ms-flex-direction: row;
+                flex-direction: row;
+                min-height: 94vh;
+                padding: 30px;
+            }
+
+            main .logo {
+                width: 350px;
+            }
+
+            main .page-description {
+                min-height: 30vh;
+                padding: 30px;
+            }
+
+            main .page-description .title {
+                margin-top: 20px;
+                color: #5754ff;
+            }
+
+            main .page-description p {
+                margin-top: 10px;
+            }
+
+            main .page-description .btn {
+                margin-top: 20px;
+            }
+
+            @media screen and (max-width: 800px) {
+                main {
+                    margin-top: 80px;
+                    padding: 5px;
+                    -webkit-box-orient: vertical;
+                    -webkit-box-direction: normal;
+                    -ms-flex-direction: column;
+                    flex-direction: column;
+                    width: 98vw;
+                }
+                main .page-description {
+                    width: 90vw;
+                }
+            }
+
+            footer {
+                height: 50px;
+                color: white;
+                display: -webkit-box;
+                display: -ms-flexbox;
+                display: flex;
+                -webkit-box-pack: center;
+                -ms-flex-pack: center;
+                justify-content: center;
+                -webkit-box-align: center;
+                -ms-flex-align: center;
+                align-items: center;
+            }
+
+            footer .copyright {
+                color: #5754ff;
+            }
+
+            footer .copyright a {
+                color: #5754ffab;
+            }
+
+            footer .copyright a:hover {
+                color: #5754ff;
+            }
+        </style>
+    </head>
+    <body class="noselect">
+        <header class="site-header has-bottom-divider" id="header">
+            <nav class="navbar">
+                <div class="branding"><a class="nav-link" href="javascript:void(0);">BukkitREST</a></div>
+                <ul class="nav-items">
+                    <ul class="nav-item">
+                        <a target="_blank" href="https://github.com/LuciferMorningstarDev/BukkitREST" class="nav-link"><i class="fab fa-github"></i> Repository</a>
+                    </ul>
+                    <ul class="nav-item">
+                        <a target="_blank" href="https://github.com/LuciferMorningstarDev/BukkitREST/issues" class="nav-link"><i class="fab fa-github"></i> Issues</a>
+                    </ul>
+                </ul>
+            </nav>
+        </header>
+
+        <main class="content" id="pageContent">
+            <section>
+                <!-- TODO <img class="logo" src="logo.png" alt="logo" /> -->
+            </section>
+
+            <section class="page-description has-left-divider" id="description">
+                <h2 class="title textselect">Currently under development</h2>
+
+                <p class="textselect">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Sapiente qui doloribus veritatis alias reprehenderit labore quas non natus ex aspernatur minus porro ipsa animi, totam consectetur delectus nemo voluptatibus cum vero maxime aliquam laborum aliquid commodi ullam. Aperiam fugiat sit natus placeat. Accusantium optio at nulla vitae laborum iure quisquam unde molestiae ullam voluptatum error esse officia laboriosam molestias dolores fuga, temporibus quaerat nostrum cum?</p>
+
+                <center>
+                    <a class="btn flashbutton-green" target="_blank" href="https://github.com/LuciferMorningstarDev/BukkitREST" title="Repository">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <i class="fas fa-project-diagram"></i> Repository
+                    </a>
+                </center>
+
+                <script>
+                    var openExternal = (url, target) => {
+                        window.open(url, target ? target : '123456789', 'width=500,height=500,toolbar=0,menubar=0,location=0,status=1,scrollbars=1,resizable=1,left=50,top=50 ');
+                    };
+                </script>
+            </section>
+        </main>
+
+        <footer class="footer has-top-divider-2" id="footer">
+            <div class="copyright" id="copyright">Copyright © 2022 <a target="_blank" href="https://github.com/LuciferMorningstarDev">LuciferMorningstarDev</a> » All Rights Reserved.</div>
+        </footer>
+    </body>
+</html>

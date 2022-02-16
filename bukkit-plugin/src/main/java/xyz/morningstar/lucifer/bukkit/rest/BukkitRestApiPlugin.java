@@ -23,6 +23,12 @@ package xyz.morningstar.lucifer.bukkit.rest;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
+import xyz.morningstar.lucifer.bukkit.rest.routes.*;
+
+import java.util.Enumeration;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 /**
  * BukkitREST; xyz.morningstar.lucifer.bukkit.rest:BukkitRestApiPlugin
@@ -54,8 +60,38 @@ public class BukkitRestApiPlugin extends JavaPlugin {
         // register API Service things
         BukkitRestApi.setProvider(this.restApiProvider);
         Bukkit.getServicesManager().register(BukkitRestApiProvider.class, this.restApiProvider, this, ServicePriority.High);
+
+        if(!this.getConfig().getBoolean("debug", false)) {
+            // async disable grizzly and glassfish debug logging
+            new Thread(() -> {
+                this.getLogger().info("§6Disabled HttpServer debug Logging...");
+                Enumeration<String> loggers = LogManager.getLogManager().getLoggerNames();
+                while (loggers.hasMoreElements()) {
+                    String loggerName = loggers.nextElement();
+                    if (loggerName.toLowerCase().contains("glassfish")) {
+                        Logger logger = LogManager.getLogManager().getLogger(loggerName);
+                        logger.setLevel(Level.OFF);
+                    } else if (loggerName.toLowerCase().contains("grizzly")) {
+                        Logger logger = LogManager.getLogManager().getLogger(loggerName);
+                        logger.setLevel(Level.OFF);
+                    }
+                }
+            }, "Kill Grizzly Debug Logger").start();
+        }
+
         Thread initializer = new Thread(() -> {
+            boolean debug = pluginInstance.getConfig().getBoolean("debug", false);
             pluginInstance.serverThread = new ServerThread(pluginInstance, pluginInstance.restApiProvider, "BukkitREST-WebServer");
+
+            pluginInstance.serverThread.getServer().getHttpServer().getServerConfiguration().setDefaultErrorPageGenerator(new ErrorPageGenerator(pluginInstance));
+            pluginInstance.serverThread.getServer().getHttpServer().getServerConfiguration().addHttpHandler(new IndexRoute(), "/");
+            if(debug) this.getLogger().info("§bRoute §aEnabled §6'§c/§6'");
+            if(pluginInstance.getConfig().getBoolean("enabledRoutes.ping", true)) {
+                pluginInstance.serverThread.getServer().addRouteExecutor(new PingRoute(pluginInstance));
+                if(debug) this.getLogger().info("§bRoute §aEnabled §6'§c/ping§6'");
+            }
+
+
             try {
                 pluginInstance.serverThread.start();
             } catch(Exception exception) {
@@ -65,21 +101,21 @@ public class BukkitRestApiPlugin extends JavaPlugin {
             }
         }, "BukkitREST-Initialization");
         initializer.start();
-        this.getLogger().info("Enabled BukkitRestApiPlugin successful...");
+        this.getLogger().info("§aEnabled BukkitRestApiPlugin successful...");
     }
 
     @Override
     public void onDisable() {
         try {
             this.serverThread.getServer().stop();
-            this.getLogger().info("API WebServer Shutdown successful...");
+            this.getLogger().info("§aAPI WebServer Shutdown successful...");
             if(this.serverThread.isAlive()) this.serverThread.interrupt();
             this.serverThread = null;
         } catch(Exception exception) {
             exception.printStackTrace();
-            this.getLogger().warning("API WebServer Shutdown failed...");
+            this.getLogger().warning("§cAPI WebServer Shutdown failed...");
         }
-        this.getLogger().info("Disabled BukkitRestApiPlugin successful...");
+        this.getLogger().info("§aDisabled BukkitRestApiPlugin successful...");
     }
 
     public BukkitRestApiProvider getRestApiProvider() {

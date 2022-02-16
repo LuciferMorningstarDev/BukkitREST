@@ -45,51 +45,12 @@ public interface Payload extends Struct {
 
     boolean write(Response response) throws IOException;
 
-    class DefaultImpl implements Payload {
-
-        private final boolean error;
-        private final String message;
-        private final HttpStatus status;
-
-        public DefaultImpl(HttpStatus status, String message, boolean error) {
-            this.error = error;
-            this.message = message;
-            this.status = status;
-        }
-
-        @Override
-        public boolean error() {
-            return error;
-        }
-
-        @Override
-        public String message() {
-            return message;
-        }
-
-        @Override
-        public HttpStatus status() {
-            return status;
-        }
-
-        @Override
-        public boolean write(Response response) throws IOException {
-            response.setStatus(status());
-            response.setContentType("application/json");
-            String json = GsonConverter.toJsonString(this);
-            response.setContentLength(json.length());
-            response.getWriter().write(json);
-            return true;
-        }
-
-    }
-
     static Payload ok() {
-        return ok("OK");
+        return ok("OK_200");
     }
 
     static Payload ok(String message) {
-        return new DefaultImpl(HttpStatus.OK_200, message, false);
+        return new PayloadImpl(HttpStatus.OK_200, message, false);
     }
 
     static Payload accepted() {
@@ -97,7 +58,7 @@ public interface Payload extends Struct {
     }
 
     static Payload accepted(String message) {
-        return new DefaultImpl(HttpStatus.ACCEPTED_202, message, false);
+        return new PayloadImpl(HttpStatus.ACCEPTED_202, message, false);
     }
 
     static Payload badRequest() {
@@ -105,7 +66,7 @@ public interface Payload extends Struct {
     }
 
     static Payload badRequest(String message) {
-        return new DefaultImpl(HttpStatus.BAD_REQUEST_400, message, true);
+        return new PayloadImpl(HttpStatus.BAD_REQUEST_400, message, true);
     }
 
     static Payload unauthorized() {
@@ -113,7 +74,7 @@ public interface Payload extends Struct {
     }
 
     static Payload unauthorized(String message) {
-        return new DefaultImpl(HttpStatus.UNAUTHORIZED_401, message, true);
+        return new PayloadImpl(HttpStatus.UNAUTHORIZED_401, message, true);
     }
 
     static Payload forbidden() {
@@ -121,7 +82,7 @@ public interface Payload extends Struct {
     }
 
     static Payload forbidden(String message) {
-        return new DefaultImpl(HttpStatus.FORBIDDEN_403, message, true);
+        return new PayloadImpl(HttpStatus.FORBIDDEN_403, message, true);
     }
 
     static Payload notFound() {
@@ -129,7 +90,7 @@ public interface Payload extends Struct {
     }
 
     static Payload notFound(String message) {
-        return new DefaultImpl(HttpStatus.NOT_FOUND_404, message, true);
+        return new PayloadImpl(HttpStatus.NOT_FOUND_404, message, true);
     }
 
     static Payload notImplemented() {
@@ -137,7 +98,7 @@ public interface Payload extends Struct {
     }
 
     static Payload notImplemented(String message) {
-        return new DefaultImpl(HttpStatus.NOT_IMPLEMENTED_501, message, true);
+        return new PayloadImpl(HttpStatus.NOT_IMPLEMENTED_501, message, true);
     }
 
     static Payload methodNotAllowed() {
@@ -145,7 +106,7 @@ public interface Payload extends Struct {
     }
 
     static Payload methodNotAllowed(String message) {
-        return new DefaultImpl(HttpStatus.METHOD_NOT_ALLOWED_405, message, true);
+        return new PayloadImpl(HttpStatus.METHOD_NOT_ALLOWED_405, message, true);
     }
 
     static Payload internalServerError() {
@@ -153,7 +114,7 @@ public interface Payload extends Struct {
     }
 
     static Payload internalServerError(String message) {
-        return new DefaultImpl(HttpStatus.INTERNAL_SERVER_ERROR_500, message, true);
+        return new PayloadImpl(HttpStatus.INTERNAL_SERVER_ERROR_500, message, true);
     }
 
     static Payload badGateway() {
@@ -161,7 +122,13 @@ public interface Payload extends Struct {
     }
 
     static Payload badGateway(String message) {
-        return new DefaultImpl(HttpStatus.BAD_GATEWAY_502, message, true);
+        return new PayloadImpl(HttpStatus.BAD_GATEWAY_502, message, true);
+    }
+
+    static void catchException(Response response, Exception e) {
+        try {
+            DataPayload.internalServerError(e).write(response);
+        } catch(Exception ex) {}
     }
 
 }

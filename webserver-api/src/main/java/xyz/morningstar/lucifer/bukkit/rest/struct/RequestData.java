@@ -36,12 +36,6 @@ import xyz.morningstar.lucifer.bukkit.rest.json.GsonConverter;
  */
 public interface RequestData {
 
-    default Method[] allowed() {
-        return new Method[] { Method.GET, Method.POST, Method.PUT, Method.PATCH };
-    }
-
-    Request original();
-
     String methodString();
 
     Method method();
@@ -50,32 +44,35 @@ public interface RequestData {
 
     String body();
 
-    JsonObject payloadData();
+    JsonObject data();
     
     class DefaultImpl implements RequestData {
 
         private Request request;
         private String body;
+        private JsonObject data;
 
         public DefaultImpl(Request request) {
             this.request = request;
             try {
                 Buffer postBody = request.getPostBody(4096);
-                this.body = postBody.toStringContent();
+                if(postBody != null) {
+                    this.body = postBody.toStringContent();
+                } else this.body = "{}";
             } catch (Exception exception) {
-                this.body = null;
+                this.body = "{}";
                 exception.printStackTrace();
+            }
+            if(!this.body.startsWith("{")) this.body = "{}";
+            try {
+                this.data = GsonConverter.toJson(body);
+            } catch(Exception e) {
             }
         }
 
         @Override
-        public Request original() {
-            return request;
-        }
-
-        @Override
         public String methodString() {
-            return request.getMethod().toString();
+            return request.getMethod().toString().toUpperCase();
         }
 
         @Override
@@ -85,7 +82,11 @@ public interface RequestData {
 
         @Override
         public String action() {
-            try { return payloadData().get("action").getAsString(); } catch(Exception e) { return null; }
+            try {
+                return data().get("action").getAsString();
+            } catch(Exception e) {
+                return null;
+            }
         }
 
         @Override
@@ -94,8 +95,8 @@ public interface RequestData {
         }
 
         @Override
-        public JsonObject payloadData() {
-            try { return GsonConverter.toJson(body); } catch(Exception e) { return null; }
+        public JsonObject data() {
+            return data;
         }
 
     }

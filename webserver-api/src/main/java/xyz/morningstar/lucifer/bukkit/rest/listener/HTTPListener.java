@@ -24,17 +24,17 @@ import org.glassfish.grizzly.http.server.NetworkListener;
 import xyz.morningstar.lucifer.bukkit.rest.configuration.ServerConfiguration;
 
 /**
- * BukkitREST; xyz.morningstar.lucifer.bukkit.rest.listener:ApiListener
+ * BukkitREST; xyz.morningstar.lucifer.bukkit.rest.listener:HTTPListener
  *
  * @license MIT <https://opensource.org/licenses/MIT>
  *
  * @author LuciferMorningstarDev - https://github.com/LuciferMorningstarDev
  * @since 15.02.2022
  */
-public class HTTPApiListener extends NetworkListener {
+public class HTTPListener extends NetworkListener {
 
-    public HTTPApiListener(ServerConfiguration config) {
-        super("RestApiListener", config.getHttpBind().host(), config.getHttpBind().port());
+    public HTTPListener(ServerConfiguration config) {
+        super("HTTP-NetworkListener", config.getHttpBind().host(), config.getHttpBind().port());
         this.setSecure(false);
         this.setTraceEnabled(false);
     }
