@@ -1,0 +1,44 @@
+{
+  "name": "bukkit-rest",
+  "version": "0.0.1",
+  "description": "This is the API documentation for the Bukkit REST API Plugin.",
+  "main": "api.doc.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "serve": "serve -s ./generated_sources -p 8080"
+  },
+  "apidoc": {
+    "title": "Documentation | Bukkit REST API",
+    "url": "https://api.example.com",
+    "sampleUrl": "https://api.example.com",
+    "useHostUrlAsSampleUrl": false,
+    "header": {
+      "title": "Bukkit REST API Documentation",
+      "filename": "docs-header.md"
+    },
+    "footer": {
+      "title": "Bukkit REST API Documentation",
+      "filename": "docs-footer.md"
+    },
+    "order": [
+      "Error",
+      "Define",
+      "PostTitleAndError",
+      "PostError"
+    ]
+  },
+  "keywords": [
+    "bukkit",
+    "api",
+    "bukkit-api",
+    "restful-api",
+    "bukkit-rest",
+    "bukkit-rest-api"
+  ],
+  "author": "LuciferMotningstarDev",
+  "license": "MIT",
+  "devDependencies": {
+    "apidoc": "^0.50.4",
+    "serve": "^13.0.2"
+  }
+}
